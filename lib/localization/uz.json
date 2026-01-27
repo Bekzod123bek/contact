@@ -1,0 +1,18 @@
+{
+  "contacts": "Kontaktlar",
+  "noContacts": "Kontaktlar yo‘q",
+
+  "addContact": "Kontakt qo‘shish",
+  "editContact": "Kontaktni tahrirlash",
+
+  "name": "Ism",
+  "phone": "Telefon",
+
+  "save": "Saqlash",
+  "delete": "O‘chirish",
+
+  "selectImage": "Iltimos rasm tanlang",
+
+  "lightTheme": "Yorug‘ rejim",
+  "darkTheme": "Qorong‘i rejim"
+}

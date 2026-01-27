@@ -1,0 +1,18 @@
+{
+  "contacts": "Contacts",
+  "noContacts": "No contacts",
+
+  "addContact": "Add contact",
+  "editContact": "Edit contact",
+
+  "name": "Name",
+  "phone": "Phone",
+
+  "save": "Save",
+  "delete": "Delete",
+
+  "selectImage": "Please select an image",
+
+  "lightTheme": "Light mode",
+  "darkTheme": "Dark mode"
+}

@@ -3,17 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+import 'app_router.dart';
 import 'firebase_options.dart';
+
+// 🌍 Storage
+import 'core/utils/locale_storage.dart';
+import 'core/utils/theme_storage.dart';
 
 // 🎨 Theme
 import 'core/theme/app_theme.dart';
 
-// DATA + CUBIT
+// 📦 Data + Cubit
 import 'features/contacts/data/contact_remote_datasource.dart';
 import 'features/contacts/presentation/cubit/contact_cubit.dart';
-
-// UI
-import 'features/contacts/presentation/pages/contact_list_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,6 +23,9 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // 🌍 Saved locale
+  final savedLocale = await LocaleStorage.load();
 
   runApp(
     EasyLocalization(
@@ -30,6 +35,7 @@ void main() async {
       ],
       path: 'lib/localization',
       fallbackLocale: const Locale('en'),
+      startLocale: savedLocale,
       child: const MyApp(),
     ),
   );
@@ -38,7 +44,7 @@ void main() async {
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  // 🔑 GLOBAL ACCESS (theme o‘zgartirish uchun)
+  // 🔑 Global access (theme toggle uchun)
   static _MyAppState of(BuildContext context) =>
       context.findAncestorStateOfType<_MyAppState>()!;
 
@@ -47,21 +53,38 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // 🎨 THEME
   ThemeMode _themeMode = ThemeMode.light;
 
-  void toggleTheme() {
+  @override
+  void initState() {
+    super.initState();
+    _loadTheme();
+  }
+
+  Future<void> _loadTheme() async {
+    final savedTheme = await ThemeStorage.load();
     setState(() {
-      _themeMode =
-      _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+      _themeMode = savedTheme;
     });
+  }
+
+  void toggleTheme() async {
+    final newTheme =
+    _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+
+    setState(() {
+      _themeMode = newTheme;
+    });
+
+    await ThemeStorage.save(newTheme);
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => ContactCubit(ContactRemoteDataSource())..loadContacts(),
-      child: MaterialApp(
+      create: (_) =>
+      ContactCubit(ContactRemoteDataSource())..loadContacts(),
+      child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
 
         // 🌍 easy_localization
@@ -69,13 +92,13 @@ class _MyAppState extends State<MyApp> {
         supportedLocales: context.supportedLocales,
         localizationsDelegates: context.localizationDelegates,
 
-        // 🎨 THEME
+        // 🎨 Theme
         theme: AppTheme.light,
         darkTheme: AppTheme.dark,
         themeMode: _themeMode,
 
-        // 🏠 HOME
-        home: const ContactListPage(),
+        // 🧭 go_router
+        routerConfig: router,
       ),
     );
   }

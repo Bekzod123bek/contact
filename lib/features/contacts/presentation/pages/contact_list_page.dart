@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/utils/dialogs.dart';
 import '../../../../core/utils/snackbar.dart';
@@ -11,8 +12,7 @@ import '../cubit/contact_state.dart';
 import '../../domain/contact.dart';
 
 import '../widgets/language_switcher.dart';
-import 'add_contact_page.dart';
-import 'edit_contact_page.dart';
+
 
 class ContactListPage extends StatelessWidget {
   const ContactListPage({super.key});
@@ -39,12 +39,9 @@ class ContactListPage extends StatelessWidget {
 
 
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const AddContactPage()),
-          );
-        },
+        onPressed: () =>
+          context.pushNamed('add'),
+
         child: const Icon(Icons.add),
       ),
 
@@ -63,14 +60,9 @@ class ContactListPage extends StatelessWidget {
                   c.imagePath.isNotEmpty && File(c.imagePath).existsSync();
 
               return ListTile(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => EditContactPage(contact: c),
-                    ),
-                  );
-                },
+                onTap: () =>
+                  context.pushNamed('edit',extra: c),
+
                 leading: CircleAvatar(
                   backgroundImage: hasImage
                       ? FileImage(File(c.imagePath))
@@ -84,7 +76,7 @@ class ContactListPage extends StatelessWidget {
                   onPressed: () async {
                     if (!await confirmDelete(context)) return;
 
-                    // 2️⃣ Delete
+                    // Delete
                     final success =
                     await context.read<ContactCubit>().deleteContact(c.id);
 

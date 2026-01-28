@@ -10,18 +10,21 @@
 
   "save": "Saqlash",
   "delete": "O‘chirish",
+  "cancel": "Bekor qilish",
+
+  "confirm": "Tasdiqlash",
+  "deleteConfirm": "Ushbu kontaktni o‘chirmoqchimisiz?",
 
   "selectImage": "Iltimos rasm tanlang",
 
   "done": "Kontakt muvaffaqiyatli saqlandi",
   "fail": "Kontaktni saqlashda xatolik",
-  "dalete": "Muoffaqiyatlik o'chrildi",
+  "dalete": "Muvaffaqiyatli o‘chirildi",
 
   "enterName": "Ism kiriting",
   "onlyText": "Faqat harflardan foydalaning",
   "enterPhone": "Telefon raqam kiriting",
   "onlyNumber": "Faqat raqam kiriting",
-
 
   "lightTheme": "Yorug‘ rejim",
   "darkTheme": "Qorong‘i rejim"

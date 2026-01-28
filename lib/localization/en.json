@@ -10,12 +10,16 @@
 
   "save": "Save",
   "delete": "Delete",
+  "cancel": "Cancel",
+
+  "confirm": "Confirm",
+  "deleteConfirm": "Are you sure you want to delete this contact?",
 
   "selectImage": "Please select an image",
 
   "done": "Contact saved successfully",
   "fail": "Failed to save contact",
-  "dalete": "Dalete successfully",
+  "dalete": "Deleted successfully",
 
   "enterName": "Enter name",
   "onlyText": "Only letters allowed",

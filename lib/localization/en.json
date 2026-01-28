@@ -13,6 +13,9 @@
 
   "selectImage": "Please select an image",
 
+  "done": "Contact saved successfully",
+  "fail": "Failed to save contact",
+
   "lightTheme": "Light mode",
   "darkTheme": "Dark mode"
 }

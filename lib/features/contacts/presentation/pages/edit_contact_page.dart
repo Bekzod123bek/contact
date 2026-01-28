@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 
-import '../../../../localization/app_localizations.dart';
 import '../../domain/contact.dart';
 import '../cubit/contact_cubit.dart';
 
@@ -37,11 +37,9 @@ class _EditContactPageState extends State<EditContactPage> {
 
   @override
   Widget build(BuildContext context) {
-    final t = AppLocalizations.of(context);
-
     return Scaffold(
       appBar: AppBar(
-        title: Text(t.t('editContact')),
+        title: Text('editContact'.tr()),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -50,7 +48,7 @@ class _EditContactPageState extends State<EditContactPage> {
             TextField(
               controller: _nameCtrl,
               decoration: InputDecoration(
-                labelText: t.t('name'),
+                labelText: 'name'.tr(),
               ),
             ),
 
@@ -60,7 +58,7 @@ class _EditContactPageState extends State<EditContactPage> {
               controller: _phoneCtrl,
               keyboardType: TextInputType.phone,
               decoration: InputDecoration(
-                labelText: t.t('phone'),
+                labelText: 'phone'.tr(),
               ),
             ),
 
@@ -69,16 +67,34 @@ class _EditContactPageState extends State<EditContactPage> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {
-                  context.read<ContactCubit>().updateContact(
+                onPressed: () async {
+                  final success =
+                  await context.read<ContactCubit>().updateContact(
                     widget.contact.id,
                     _nameCtrl.text.trim(),
                     _phoneCtrl.text.trim(),
                   );
 
-                  Navigator.pop(context);
+                  if (!context.mounted) return;
+
+                  if (success) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('done'.tr()),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                    Navigator.pop(context);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('fail'.tr()),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
                 },
-                child: Text(t.t('save')),
+                child: Text('save'.tr()),
               ),
             ),
           ],

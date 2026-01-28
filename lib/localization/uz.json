@@ -13,6 +13,9 @@
 
   "selectImage": "Iltimos rasm tanlang",
 
+  "done": "Kontakt muvaffaqiyatli saqlandi",
+  "fail": "Kontaktni saqlashda xatolik",
+
   "lightTheme": "Yorug‘ rejim",
   "darkTheme": "Qorong‘i rejim"
 }

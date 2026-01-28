@@ -1,16 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'firebase_options.dart';
 
-// 🌍 Localization
-import 'localization/app_localizations.dart';
-
 // 🎨 Theme
 import 'core/theme/app_theme.dart';
-
 
 // DATA + CUBIT
 import 'features/contacts/data/contact_remote_datasource.dart';
@@ -21,16 +17,28 @@ import 'features/contacts/presentation/pages/contact_list_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+
+  runApp(
+    EasyLocalization(
+      supportedLocales: const [
+        Locale('en'),
+        Locale('uz'),
+      ],
+      path: 'lib/localization',
+      fallbackLocale: const Locale('en'),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  // 🔑 GLOBAL ACCESS (til + theme o‘zgartirish uchun)
+  // 🔑 GLOBAL ACCESS (theme o‘zgartirish uchun)
   static _MyAppState of(BuildContext context) =>
       context.findAncestorStateOfType<_MyAppState>()!;
 
@@ -39,15 +47,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // 🌍 LANGUAGE
-  Locale _locale = const Locale('en');
-
-  void changeLanguage(Locale locale) {
-    setState(() {
-      _locale = locale;
-    });
-  }
-
   // 🎨 THEME
   ThemeMode _themeMode = ThemeMode.light;
 
@@ -65,18 +64,10 @@ class _MyAppState extends State<MyApp> {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
 
-        // 🌍 LANGUAGE
-        locale: _locale,
-        supportedLocales: const [
-          Locale('en'),
-          Locale('uz'),
-        ],
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
+        // 🌍 easy_localization
+        locale: context.locale,
+        supportedLocales: context.supportedLocales,
+        localizationsDelegates: context.localizationDelegates,
 
         // 🎨 THEME
         theme: AppTheme.light,

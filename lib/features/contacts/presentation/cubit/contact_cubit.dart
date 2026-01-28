@@ -13,13 +13,24 @@ class ContactCubit extends Cubit<ContactState> {
     });
   }
 
-  Future<void> addContact(String name, String phone, String imagePath) async {
-    await remote.addContact(name, phone, imagePath);
+  Future<bool> addContact(String name, String phone, String imagePath) async {
+    try {
+      await remote.addContact(name, phone, imagePath);
+      return true; // ✅ SUCCESS
+    } catch (e) {
+      return false; // ❌ ERROR
+    }
   }
 
-  Future<void> updateContact(String id, String name, String phone) async {
-    await remote.updateContact(id, name, phone);
+  Future<bool> updateContact(String id, String name, String phone) async {
+    try {
+      await remote.updateContact(id, name, phone);
+      return true;
+    } catch (_) {
+      return false;
+    }
   }
+
 
   Future<void> deleteContact(String id) async {
     await remote.deleteContact(id);

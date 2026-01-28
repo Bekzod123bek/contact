@@ -2,8 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 
-import '../../../../localization/app_localizations.dart';
 import '../cubit/contact_cubit.dart';
 
 class AddContactPage extends StatefulWidget {
@@ -37,11 +37,9 @@ class _AddContactPageState extends State<AddContactPage> {
 
   @override
   Widget build(BuildContext context) {
-    final t = AppLocalizations.of(context);
-
     return Scaffold(
       appBar: AppBar(
-        title: Text(t.t('addContact')),
+        title: Text('addContact'.tr()),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -64,17 +62,18 @@ class _AddContactPageState extends State<AddContactPage> {
             TextField(
               controller: _nameController,
               decoration: InputDecoration(
-                labelText: t.t('name'),
+                labelText: 'name'.tr(),
               ),
             ),
 
             const SizedBox(height: 10),
 
             TextField(
+
               controller: _phoneController,
               keyboardType: TextInputType.phone,
               decoration: InputDecoration(
-                labelText: t.t('phone'),
+                labelText: 'phone'.tr(),
               ),
             ),
 
@@ -83,25 +82,42 @@ class _AddContactPageState extends State<AddContactPage> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (_image == null) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(t.t('selectImage')),
-                      ),
+                      SnackBar(content: Text('selectImage'.tr())),
                     );
                     return;
                   }
 
-                  context.read<ContactCubit>().addContact(
+                  final success = await context.read<ContactCubit>().addContact(
                     _nameController.text.trim(),
                     _phoneController.text.trim(),
-                    _image!.path, // ✅ LOCAL IMAGE PATH
+                    _image!.path,
                   );
 
-                  Navigator.pop(context);
+                  if (!context.mounted) return;
+
+                  if (success) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('done'.tr()),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+
+                    Navigator.pop(context);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('fail'.tr()),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
                 },
-                child: Text(t.t('save')),
+
+                child: Text('save'.tr()),
               ),
             ),
           ],

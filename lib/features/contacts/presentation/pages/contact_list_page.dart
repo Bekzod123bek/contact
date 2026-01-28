@@ -25,13 +25,27 @@ class ContactListPage extends StatelessWidget {
             onPressed: () {
               context.setLocale(const Locale('en'));
             },
-            child: const Text('EN', style: TextStyle(color: Colors.white)),
+            child: Text(
+              'EN',
+              style: TextStyle(
+                color: context.locale.languageCode == 'en'
+                    ? Colors.red
+                    : Colors.white,
+              ),
+            ),
           ),
           TextButton(
             onPressed: () {
               context.setLocale(const Locale('uz'));
             },
-            child: const Text('UZ', style: TextStyle(color: Colors.white)),
+            child: Text(
+              'UZ',
+              style: TextStyle(
+                color: context.locale.languageCode == 'uz'
+                    ? Colors.red
+                    : Colors.white,
+              ),
+            ),
           ),
 
           // 🌙 THEME
@@ -58,44 +72,87 @@ class ContactListPage extends StatelessWidget {
         child: const Icon(Icons.add),
       ),
 
-      body: BlocBuilder<ContactCubit, ContactState>(
-        builder: (context, state) {
-          if (state.contacts.isEmpty) {
-            return Center(
-              child: Text('noContacts'.tr()),
-            );
-          }
+      body: Builder(
+        builder: (scaffoldContext) {
+          return BlocBuilder<ContactCubit, ContactState>(
+            builder: (context, state) {
+              if (state.contacts.isEmpty) {
+                return Center(child: Text('noContacts'.tr()));
+              }
 
-          return ListView.builder(
-            itemCount: state.contacts.length,
-            itemBuilder: (context, index) {
-              final Contact c = state.contacts[index];
+              return ListView.builder(
+                itemCount: state.contacts.length,
+                itemBuilder: (context, index) {
+                  final Contact c = state.contacts[index];
 
-              final hasImage =
-                  c.imagePath.isNotEmpty && File(c.imagePath).existsSync();
+                  final hasImage =
+                      c.imagePath.isNotEmpty && File(c.imagePath).existsSync();
 
-              return ListTile(
-                leading: CircleAvatar(
-                  backgroundImage:
-                  hasImage ? FileImage(File(c.imagePath)) : null,
-                  child: !hasImage ? const Icon(Icons.person) : null,
-                ),
-                title: Text(c.name),
-                subtitle: Text(c.phone),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => EditContactPage(contact: c),
+                  return ListTile(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => EditContactPage(contact: c),
+                        ),
+                      );
+                    },
+                    leading: CircleAvatar(
+                      backgroundImage: hasImage
+                          ? FileImage(File(c.imagePath))
+                          : null,
+                      child: !hasImage ? const Icon(Icons.person) : null,
+                    ),
+                    title: Text(c.name),
+                    subtitle: Text(c.phone),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: () async {
+                        final bool? confirm = await showDialog<bool>(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text('confirm'.tr()),
+                              content: Text('deleteConfirm'.tr()),
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.pop(context, false),
+                                  child: Text('cancel'.tr()),
+                                ),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.red,
+                                  ),
+                                  onPressed: () => Navigator.pop(context, true),
+                                  child: Text('delete'.tr()),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+
+                        if (confirm != true) return;
+
+                        // ❌❌❌ faqat confirm bo‘lsa delete qilamiz
+                        final success = await context
+                            .read<ContactCubit>()
+                            .deleteContact(c.id);
+
+                        if (!context.mounted) return;
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(success ? 'delete'.tr() : 'error'),
+                            backgroundColor: success
+                                ? Colors.green
+                                : Colors.red,
+                          ),
+                        );
+                      },
                     ),
                   );
                 },
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.red),
-                  onPressed: () {
-                    context.read<ContactCubit>().deleteContact(c.id);
-                  },
-                ),
               );
             },
           );

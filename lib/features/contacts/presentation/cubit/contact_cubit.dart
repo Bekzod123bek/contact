@@ -32,7 +32,13 @@ class ContactCubit extends Cubit<ContactState> {
   }
 
 
-  Future<void> deleteContact(String id) async {
-    await remote.deleteContact(id);
-  }
+    Future<bool> deleteContact(String id) async {
+      try {
+        await remote.deleteContact(id);
+        return true;
+      } catch (_) {
+        return false;
+      }
+
+    }
 }

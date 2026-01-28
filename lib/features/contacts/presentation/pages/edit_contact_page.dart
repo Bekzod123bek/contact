@@ -16,10 +16,12 @@ class EditContactPage extends StatefulWidget {
   @override
   State<EditContactPage> createState() => _EditContactPageState();
 }
-
 class _EditContactPageState extends State<EditContactPage> {
+  final _formKey = GlobalKey<FormState>();
+
   late TextEditingController _nameCtrl;
   late TextEditingController _phoneCtrl;
+
 
   @override
   void initState() {
@@ -43,61 +45,90 @@ class _EditContactPageState extends State<EditContactPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            TextField(
-              controller: _nameCtrl,
-              decoration: InputDecoration(
-                labelText: 'name'.tr(),
-              ),
-            ),
-
-            const SizedBox(height: 12),
-
-            TextField(
-              controller: _phoneCtrl,
-              keyboardType: TextInputType.phone,
-              decoration: InputDecoration(
-                labelText: 'phone'.tr(),
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () async {
-                  final success =
-                  await context.read<ContactCubit>().updateContact(
-                    widget.contact.id,
-                    _nameCtrl.text.trim(),
-                    _phoneCtrl.text.trim(),
-                  );
-
-                  if (!context.mounted) return;
-
-                  if (success) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('done'.tr()),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
-                    Navigator.pop(context);
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('fail'.tr()),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              TextFormField(
+                controller: _nameCtrl,
+                textCapitalization: TextCapitalization.words,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'enterName'.tr(); // Ism kiriting
                   }
+                  if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
+                    return 'onlyText'.tr(); // Faqat harf
+                  }
+                  return null;
                 },
-                child: Text('save'.tr()),
+                decoration: InputDecoration(
+                  labelText: 'name'.tr(),
+                ),
               ),
-            ),
-          ],
+
+
+              const SizedBox(height: 12),
+
+              TextFormField(
+                controller: _phoneCtrl,
+                keyboardType: TextInputType.phone,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'enterPhone'.tr(); // Telefon kiriting
+                  }
+                  if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+                    return 'onlyNumber'.tr(); // Faqat raqam
+                  }
+                  return null;
+                },
+                decoration: InputDecoration(
+                  labelText: 'phone'.tr(),
+                ),
+              ),
+
+
+              const SizedBox(height: 20),
+
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    if (!_formKey.currentState!.validate()) {
+                      return; // ❌ xato bo‘lsa saqlamaydi
+                    }
+
+                    final success =
+                    await context.read<ContactCubit>().updateContact(
+                      widget.contact.id,
+                      _nameCtrl.text.trim(),
+                      _phoneCtrl.text.trim(),
+                    );
+
+                    if (!context.mounted) return;
+
+                    if (success) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('done'.tr()),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                      Navigator.pop(context);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('fail'.tr()),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
+                  },
+
+                  child: Text('save'.tr()),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

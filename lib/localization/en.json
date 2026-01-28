@@ -15,6 +15,12 @@
 
   "done": "Contact saved successfully",
   "fail": "Failed to save contact",
+  "dalete": "Dalete successfully",
+
+  "enterName": "Enter name",
+  "onlyText": "Only letters allowed",
+  "enterPhone": "Enter phone number",
+  "onlyNumber": "Only numbers allowed",
 
   "lightTheme": "Light mode",
   "darkTheme": "Dark mode"

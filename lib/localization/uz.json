@@ -15,6 +15,13 @@
 
   "done": "Kontakt muvaffaqiyatli saqlandi",
   "fail": "Kontaktni saqlashda xatolik",
+  "dalete": "Muoffaqiyatlik o'chrildi",
+
+  "enterName": "Ism kiriting",
+  "onlyText": "Faqat harflardan foydalaning",
+  "enterPhone": "Telefon raqam kiriting",
+  "onlyNumber": "Faqat raqam kiriting",
+
 
   "lightTheme": "Yorug‘ rejim",
   "darkTheme": "Qorong‘i rejim"

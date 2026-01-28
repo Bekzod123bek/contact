@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+import '../../../../core/utils/snackbar.dart';
+import '../../../../core/utils/validator.dart';
 import '../../domain/contact.dart';
 import '../cubit/contact_cubit.dart';
+import '../widgets/app_text_field.dart';
 
 class EditContactPage extends StatefulWidget {
   final Contact contact;
@@ -49,41 +52,20 @@ class _EditContactPageState extends State<EditContactPage> {
           key: _formKey,
           child: Column(
             children: [
-              TextFormField(
+              AppTextField(
                 controller: _nameCtrl,
-                textCapitalization: TextCapitalization.words,
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'enterName'.tr(); // Ism kiriting
-                  }
-                  if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
-                    return 'onlyText'.tr(); // Faqat harf
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(
-                  labelText: 'name'.tr(),
-                ),
+                label: 'name',
+                validator: nameValidator,
               ),
 
 
               const SizedBox(height: 12),
 
-              TextFormField(
+              AppTextField(
                 controller: _phoneCtrl,
+                label: 'phone',
                 keyboardType: TextInputType.phone,
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'enterPhone'.tr(); // Telefon kiriting
-                  }
-                  if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
-                    return 'onlyNumber'.tr(); // Faqat raqam
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(
-                  labelText: 'phone'.tr(),
-                ),
+                validator: phoneValidator,
               ),
 
 
@@ -107,22 +89,13 @@ class _EditContactPageState extends State<EditContactPage> {
                     if (!context.mounted) return;
 
                     if (success) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('done'.tr()),
-                          backgroundColor: Colors.green,
-                        ),
-                      );
+                      showSnack(context, 'done');
                       Navigator.pop(context);
                     } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('fail'.tr()),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
+                      showSnack(context, 'fail', success: false);
                     }
                   },
+
 
                   child: Text('save'.tr()),
                 ),

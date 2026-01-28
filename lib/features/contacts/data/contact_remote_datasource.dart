@@ -13,7 +13,7 @@ class ContactRemoteDataSource {
             id: doc.id,
             name: data['name'],
             phone: data['phone'],
-            imagePath: data['imagePath'], // local path
+            imagePath: data['imagePath'],
           );
         }).toList();
       },

@@ -4,7 +4,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+import '../../../../core/utils/snackbar.dart';
+import '../../../../core/utils/validator.dart';
 import '../cubit/contact_cubit.dart';
+import '../widgets/app_text_field.dart';
 
 class AddContactPage extends StatefulWidget {
   const AddContactPage({super.key});
@@ -63,40 +66,20 @@ class _AddContactPageState extends State<AddContactPage> {
 
               const SizedBox(height: 16),
 
-              TextFormField(
+              AppTextField(
                 controller: _nameController,
-                textCapitalization: TextCapitalization.words,
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'enterName'.tr(); // "Ism kiriting"
-                  }
-                  if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
-                    return 'onlyText'.tr(); // "Faqat harf"
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(
-                  labelText: 'name'.tr(),
-                ),
+                label: 'name',
+                validator: nameValidator,
               ),
 
 
               const SizedBox(height: 10),
-              TextFormField(
+
+              AppTextField(
                 controller: _phoneController,
+                label: 'phone',
                 keyboardType: TextInputType.phone,
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'enterPhone'.tr(); // "Telefon kiriting"
-                  }
-                  if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
-                    return 'onlyNumber'.tr(); // "Faqat raqam"
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(
-                  labelText: 'phone'.tr(),
-                ),
+                validator: phoneValidator,
               ),
 
 
@@ -126,12 +109,8 @@ class _AddContactPageState extends State<AddContactPage> {
                       if (!context.mounted) return;
 
                       if (success) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('done'.tr()),
-                            backgroundColor: Colors.green,
-                          ),
-                        );
+                        showSnack(context, 'done');
+
                         Navigator.pop(context);
                       }
                     },

@@ -3,11 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+import '../../../../core/utils/dialogs.dart';
+import '../../../../core/utils/snackbar.dart';
 import '../../../../main.dart';
 import '../cubit/contact_cubit.dart';
 import '../cubit/contact_state.dart';
 import '../../domain/contact.dart';
 
+import '../widgets/language_switcher.dart';
 import 'add_contact_page.dart';
 import 'edit_contact_page.dart';
 
@@ -20,35 +23,7 @@ class ContactListPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('contacts'.tr()),
         actions: [
-          // 🌍 LANGUAGE
-          TextButton(
-            onPressed: () {
-              context.setLocale(const Locale('en'));
-            },
-            child: Text(
-              'EN',
-              style: TextStyle(
-                color: context.locale.languageCode == 'en'
-                    ? Colors.red
-                    : Colors.white,
-              ),
-            ),
-          ),
-          TextButton(
-            onPressed: () {
-              context.setLocale(const Locale('uz'));
-            },
-            child: Text(
-              'UZ',
-              style: TextStyle(
-                color: context.locale.languageCode == 'uz'
-                    ? Colors.red
-                    : Colors.white,
-              ),
-            ),
-          ),
-
-          // 🌙 THEME
+          const LanguageSwitcher(),
           IconButton(
             icon: Icon(
               Theme.of(context).brightness == Brightness.dark
@@ -62,6 +37,7 @@ class ContactListPage extends StatelessWidget {
         ],
       ),
 
+
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
@@ -72,87 +48,56 @@ class ContactListPage extends StatelessWidget {
         child: const Icon(Icons.add),
       ),
 
-      body: Builder(
-        builder: (scaffoldContext) {
-          return BlocBuilder<ContactCubit, ContactState>(
-            builder: (context, state) {
-              if (state.contacts.isEmpty) {
-                return Center(child: Text('noContacts'.tr()));
-              }
+      body: BlocBuilder<ContactCubit, ContactState>(
+        builder: (context, state) {
+          if (state.contacts.isEmpty) {
+            return Center(child: Text('noContacts'.tr()));
+          }
 
-              return ListView.builder(
-                itemCount: state.contacts.length,
-                itemBuilder: (context, index) {
-                  final Contact c = state.contacts[index];
+          return ListView.builder(
+            itemCount: state.contacts.length,
+            itemBuilder: (context, index) {
+              final Contact c = state.contacts[index];
 
-                  final hasImage =
-                      c.imagePath.isNotEmpty && File(c.imagePath).existsSync();
+              final hasImage =
+                  c.imagePath.isNotEmpty && File(c.imagePath).existsSync();
 
-                  return ListTile(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => EditContactPage(contact: c),
-                        ),
-                      );
-                    },
-                    leading: CircleAvatar(
-                      backgroundImage: hasImage
-                          ? FileImage(File(c.imagePath))
-                          : null,
-                      child: !hasImage ? const Icon(Icons.person) : null,
-                    ),
-                    title: Text(c.name),
-                    subtitle: Text(c.phone),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.red),
-                      onPressed: () async {
-                        final bool? confirm = await showDialog<bool>(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              title: Text('confirm'.tr()),
-                              content: Text('deleteConfirm'.tr()),
-                              actions: [
-                                TextButton(
-                                  onPressed: () =>
-                                      Navigator.pop(context, false),
-                                  child: Text('cancel'.tr()),
-                                ),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.red,
-                                  ),
-                                  onPressed: () => Navigator.pop(context, true),
-                                  child: Text('delete'.tr()),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-
-                        if (confirm != true) return;
-
-                        // ❌❌❌ faqat confirm bo‘lsa delete qilamiz
-                        final success = await context
-                            .read<ContactCubit>()
-                            .deleteContact(c.id);
-
-                        if (!context.mounted) return;
-
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(success ? 'delete'.tr() : 'error'),
-                            backgroundColor: success
-                                ? Colors.green
-                                : Colors.red,
-                          ),
-                        );
-                      },
+              return ListTile(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => EditContactPage(contact: c),
                     ),
                   );
                 },
+                leading: CircleAvatar(
+                  backgroundImage: hasImage
+                      ? FileImage(File(c.imagePath))
+                      : null,
+                  child: !hasImage ? const Icon(Icons.person) : null,
+                ),
+                title: Text(c.name),
+                subtitle: Text(c.phone),
+                trailing: IconButton(
+                  icon: const Icon(Icons.delete, color: Colors.red),
+                  onPressed: () async {
+                    if (!await confirmDelete(context)) return;
+
+                    // 2️⃣ Delete
+                    final success =
+                    await context.read<ContactCubit>().deleteContact(c.id);
+
+                    if (!context.mounted) return;
+
+                    showSnack(
+                      context,
+                      success ? 'delete' : 'error',
+                      success: success,
+                    );
+                  },
+
+                ),
               );
             },
           );

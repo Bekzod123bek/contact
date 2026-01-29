@@ -90,7 +90,7 @@ class _AddContactPageState extends State<AddContactPage> {
                 child: ElevatedButton(
                     onPressed: () async {
                       if (!_formKey.currentState!.validate()) {
-                        return; // ❌ xato bo‘lsa to‘xtaydi
+                        return;
                       }
 
                       if (_image == null) {

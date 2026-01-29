@@ -47,6 +47,8 @@ class ContactListPage extends StatelessWidget {
 
       body: BlocBuilder<ContactCubit, ContactState>(
         builder: (context, state) {
+
+
           if (state.contacts.isEmpty) {
             return Center(child: Text('noContacts'.tr()));
           }

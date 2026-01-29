@@ -16,9 +16,9 @@ class AppTheme {
 
   static ThemeData dark = ThemeData(
     brightness: Brightness.dark,
-    scaffoldBackgroundColor: Colors.black,
+    scaffoldBackgroundColor: Colors.blueGrey,
     appBarTheme: const AppBarTheme(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.black12,
       foregroundColor: Colors.white,
     ),
     floatingActionButtonTheme: const FloatingActionButtonThemeData(

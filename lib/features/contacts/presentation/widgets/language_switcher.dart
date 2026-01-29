@@ -19,7 +19,7 @@ class LanguageSwitcher extends StatelessWidget {
       child: Text(
         code.toUpperCase(),
         style: TextStyle(
-          color: lang == code ? Colors.grey : Colors.white,
+          color: lang == code ? Colors.black : Colors.white,
         ),
       ),
     );

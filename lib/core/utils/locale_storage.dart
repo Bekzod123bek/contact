@@ -9,7 +9,7 @@ class LocaleStorage {
     await prefs.setString(_key, locale.languageCode);
   }
 
-  static Future<Locale?> load() async {
+  static Future<Locale?> read() async {
     final prefs = await SharedPreferences.getInstance();
     final code = prefs.getString(_key);
     if (code == null) return null;

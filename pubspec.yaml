@@ -1,5 +1,5 @@
 name: contact
-description: "A new Flutter project."
+description: "My Contact Project"
 publish_to: 'none'
 
 version: 1.0.0+1
@@ -10,20 +10,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
   cupertino_icons: ^1.0.8
-
-  # Firebase
-  firebase_core: ^2.27.0
-  cloud_firestore: ^4.15.0
-
-  # State management
-  flutter_bloc: ^8.1.3
-
-  # Image picker
-  image_picker: ^1.0.7
-
-  # 🌍 Easy Localization
+  firebase_core: ^4.4.0
+  cloud_firestore: ^6.1.2
+  flutter_bloc: ^9.1.1
+  image_picker: ^1.1.2
   easy_localization: ^3.0.5
   go_router: ^17.0.1
   shared_preferences: ^2.5.4
@@ -37,5 +28,4 @@ flutter:
   uses-material-design: true
 
   assets:
-
     - lib/localization/

@@ -6,41 +6,67 @@
 <img width="400" height="860" alt="image" src="https://github.com/user-attachments/assets/af0f1c47-25ea-4f04-8296-1f1f933b9b76" />
 <img width="400" height="860" alt="image" src="https://github.com/user-attachments/assets/1961e72f-b15f-47b7-8ebb-e2acd011fab2" />
 
-A simple and clean Contact Manager application built with Flutter, Firebase, and Bloc/Cubit state management.
-The app allows users to add, edit, delete contacts, store data in Firebase Firestore, save images locally, and switch language & theme dynamically.
+# 📇 Contact Manager App (Flutter)
 
-✨ Features
-➕ Add new contacts
-✏️ Edit existing contacts
-🗑 Delete contacts
-📸 Pick and store contact images locally
-☁️ Store contact data in Firebase Firestore
-🌍 Multi-language support (EN / UZ)
-🎨 Light & Dark theme support
-🔄 Real-time updates with Firestore
-🧠 Clean architecture with Cubit (flutter_bloc)
-🧰 Tech Stack
-Flutter
-Firebase
-Firebase Core
-Cloud Firestore
-State Management
-flutter_bloc (Cubit)
-Localization
-JSON-based localization (no ARB)
-Image Picker
+A modern **Flutter Contact Manager application** built with  
+**Bloc**, **Firebase**, **go_router**, **Easy Localization**, and **persistent theme & language settings**.
 
+---
 
-📂 Project Structure
+## ✨ Features
+
+- 📇 Create, edit, and delete contacts
+- 🖼 Add contact photo from gallery
+- 🔍 Real-time contact list updates
+- 🌍 Multi-language support (EN / UZ)
+- 🌙 Light & Dark theme
+- 💾 Theme and language persistence
+- 🔄 State management with Bloc
+- 🧭 Modern navigation using go_router
+- ☁️ Firebase backend
+- 📱 Clean UI & scalable architecture
+
+---
+
+## 🧱 Tech Stack
+
+| Technology | Usage |
+|-----------|------|
+| **Flutter** | UI framework |
+| **Dart** | Programming language |
+| **Firebase** | Backend & data storage |
+| **flutter_bloc** | State management |
+| **go_router** | Navigation (Navigator 2.0) |
+| **easy_localization** | Multi-language support |
+| **shared_preferences** | Persist theme & language |
+| **image_picker** | Select contact images |
+
+---
+
+## 📂 Project Structure
+
+```text
 lib/
- ├── features/
- │   └── contacts/
- │       ├── data/
- │       ├── domain/
- │       └── presentation/
- │           ├── cubit/
- │           └── pages/
- ├── localization/
- │   ├── en.json
- │   └── uz.json
- └── main.dart
+├── core/
+│   ├── theme/
+│   ├── utils/
+│   │   ├── locale_storage.dart
+│   │   ├── theme_storage.dart
+│   │   ├── snackbar.dart
+│   │   └── dialogs.dart
+│   └── widgets/
+├── features/
+│   └── contacts/
+│       ├── data/
+│       ├── domain/
+│       └── presentation/
+│           ├── cubit/
+│           ├── pages/
+│           └── widgets/
+├── localization/
+│   ├── en.json
+│   └── uz.json
+├── app_router.dart
+├── firebase_options.dart
+└── main.dart
+
